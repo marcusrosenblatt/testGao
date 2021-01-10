@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1606403670813.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "6077B466",
+    "lastKnownWriteTime" : 1607893995,
+    "last_content_update" : 1607893995,
+    "path" : "~/Dokumente/Modeling/testGao/example_mod3_from table result_new2-1.r",
+    "project_path" : "example_mod3_from table result_new2-1.r",
+    "properties" : {
+        "cursorPosition" : "85,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

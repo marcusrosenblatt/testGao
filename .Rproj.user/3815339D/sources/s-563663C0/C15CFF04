@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1607935889236.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "C15CFF04",
+    "lastKnownWriteTime" : 1610295387,
+    "last_content_update" : 1610295387283,
+    "path" : "~/Dokumente/Modeling/testGao/figures_thesis.r",
+    "project_path" : "figures_thesis.r",
+    "properties" : {
+        "cursorPosition" : "111,79",
+        "scrollLine" : "88"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

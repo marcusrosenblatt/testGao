@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1607890581858.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2383554360",
+    "id" : "B8DC6479",
+    "lastKnownWriteTime" : 1607897838,
+    "last_content_update" : 1607897838397,
+    "path" : "~/Dokumente/Modeling/testGao/figures_talk.r",
+    "project_path" : "figures_talk.r",
+    "properties" : {
+        "cursorPosition" : "67,14",
+        "scrollLine" : "59"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
