@@ -6,7 +6,8 @@ library("NBPSeq")
 library("qvalue")
 library("RNAsense")
 library("SummarizedExperiment")
-library(dMod)
+library("dMod")
+library("cowplot")
 
 path <- "~/Dokumente/Doktorarbeit/Thesis/Figures/Zebrafish/"
 
@@ -88,19 +89,68 @@ print(VULCANO)
 dev.off()
 
 
-data_switchplot <- do.call(rbind, lapply(c("slc35a5", "sox3", "sox2", "dap", "thraa", "triob"), function(mygene){
+data_switchplot <- do.call(rbind, lapply(c("slc35a5", "sox3", "sox2", "dap", "thraa", "triob", "nanog", "sox19b"), function(mygene){
   cbind(subset(resultSwitch, genename==mygene),
         data.frame(time = c(2.5,3,3.5,4,4.5,5,5.5,6),
                    value = as.numeric(assays(mydataSE[which(rowData(mydataSE)$genename==mygene),
                                                       which(colData(mydataSE)$condition=="WT" &
                                                               colData(mydataSE)$replicate=="B1")])[[1]][1,])))
 }))
-pdf(file = paste0(path, "Switchplot.pdf"), width = 7, height = 4)
-ggplot(data_switchplot, aes(x=time, y=value)) + #geom_smooth(color="grey", linetype="dashed", fill=NA) +
-  geom_vline(data = data_switchplot, aes(xintercept=timepoint, color=switch)) +
-  geom_point() + facet_wrap(~genename, scales="free_y") + theme_dMod(base_size = 12) + xlab("Time [hpf]") + ylab("Expression level [RNA-seq counts]") +
+
+data_switchplot <- do.call(rbind, lapply(unique(data_switchplot$genename), function(gene){
+  sub <- subset(data_switchplot, genename==gene)
+  sub$value <- sub$value/max(sub$value)
+  sub$timepoint <- sub$timepoint+0.5
+  ystep1 <- do.call(c, lapply(1:7, function(i){mean(sub$value[1:i])}))
+  ystep2 <- do.call(c, lapply(1:7, function(i){mean(sub$value[(i+1):8])}))
+  ymean <- mean(sub$value)
+  cbind(sub, ystep1 = c(ystep1, NA), ystep2 = c(ystep2, NA), ymean = c(ymean, rep(NA, 7)))
+}))
+
+# data_switchplot1 <- subset(data_switchplot, genename%in%c("slc35a5", "sox3"))
+# P1 <- ggplot(data_switchplot1, aes(x=time, y=value)) + #geom_smooth(color="grey", linetype="dashed", fill=NA) +
+#   geom_segment(data = data_switchplot1, aes(x=2, xend=time+0.25, y=ystep1, yend=ystep1, color=as.factor(time)), linetype="dashed") +
+#   geom_segment(data = data_switchplot1, aes(x=time+0.25, xend=time+0.25, y=ystep1, yend=ystep2, color=as.factor(time)), linetype="dashed") +
+#   geom_segment(data = data_switchplot1, aes(x=time+0.25, xend=6.5, y=ystep2, yend=ystep2, color=as.factor(time)), linetype="dashed") +
+#   geom_point() + facet_wrap(~genename, scales="fixed") + theme_dMod(base_size = 10) + xlab("Time [hpf]") + 
+#   ylab("Expr. level [normalized]") +
+#   scale_y_continuous(breaks=c(0,0.5,1)) +
+#   scale_x_continuous(breaks=c(3,4,5,6)) +
+#   theme(panel.grid.minor = element_blank(), legend.position = "bottom") +
+#   scale_color_dMod(name="Step at time point")
+
+data_switchplot2 <- subset(data_switchplot, genename%in%c("slc35a5", "sox3", "sox19b", "nanog"))
+P2 <- ggplot(data_switchplot2, aes(x=time, y=value)) + #geom_smooth(color="grey", linetype="dashed", fill=NA) +
+  geom_segment(data = data_switchplot2, aes(x=2.2, xend=time+0.25, y=ystep1, yend=ystep1, color=time==timepoint, linetype=time==timepoint)) +
+  geom_segment(data = data_switchplot2, aes(x=time+0.25, xend=time+0.25, y=ystep1, yend=ystep2, color=time==timepoint, linetype=time==timepoint)) +
+  geom_segment(data = data_switchplot2, aes(x=time+0.25, xend=6.5, y=ystep2, yend=ystep2, color=time==timepoint, linetype=time==timepoint)) +
+  geom_point() + facet_wrap(~genename, scales="fixed", nrow=1) + theme_dMod(base_size = 10) + xlab("Time [hpf]") + 
+  ylab("Expr. level [normalized]") +
+  scale_y_continuous(breaks=c(0,0.5,1)) +
+  scale_x_continuous(breaks=c(3,4,5,6)) +
+  theme(panel.grid.minor = element_blank(), legend.position = "bottom", legend.key.width = unit(3, "line")) +
+  scale_color_manual(name="One-step models", values= c("red", "grey"), breaks=c(TRUE, FALSE), labels=c("Best", "Candidate")) + 
+  scale_linetype_manual(name="One-step models", values=c("solid", "longdash"), breaks=c(TRUE, FALSE), labels=c("Best", "Candidate"))
+
+P3 <- ggplot(data_switchplot, aes(x=time, y=value)) + #geom_smooth(color="grey", linetype="dashed", fill=NA) +
+  #geom_vline(data = data_switchplot, aes(xintercept=timepoint, color=switch)) +
+  geom_segment(data = data_switchplot, aes(x=2.2, xend=6.5, y=ymean, yend=ymean), color="blue") +
+  geom_point() + facet_wrap(~genename, scales="fixed") + theme_dMod(base_size = 10) + xlab("Time [hpf]") + 
+  geom_segment(data = subset(data_switchplot, time==timepoint), aes(x=2.2, xend=time+0.25, y=ystep1, yend=ystep1), color="red") +
+  geom_segment(data = subset(data_switchplot, time==timepoint), aes(x=time+0.25, xend=time+0.25, y=ystep1, yend=ystep2), color="red") +
+  geom_segment(data = subset(data_switchplot, time==timepoint), aes(x=time+0.25, xend=6.5, y=ystep2, yend=ystep2), color="red") +
+  ylab("Expr. level [normalized]") +
+  scale_y_continuous(breaks=c(0,0.5,1)) +
+  scale_x_continuous(breaks=c(3,4,5,6)) +
   theme(panel.grid.minor = element_blank(), legend.position = "right") +
   scale_color_dMod(name="", breaks=c("down", "none", "up"), labels=c("Switch down", "No switch", "Switch up"))
+
+pdf(file = paste0(path, "Switchplot.pdf"), width = 7, height = 7)
+ggdraw() +
+  #draw_plot(P1, x=0, y=.6, width=.5, height=.4) +
+  draw_plot(P2, x=0, y=.6, width=1, height=.4) +
+  draw_plot(P3, x=0, y=0, width=1, height=.6) +
+  draw_plot_label(c("A", "B"), x=c(0,0), y=c(1,.6), size=12)
 dev.off()
 
 

@@ -6,7 +6,7 @@ library("NBPSeq")
 library("qvalue")
 library("RNAsense")
 library("SummarizedExperiment")
-library(dMod)
+library("dMod")
 
 #important! the table for reading should have the following col.names: gene/genename(geneID and symble)/samples
 #sample name following genotype(big letter)_rep(small letter)_time(1:8)
